@@ -120,11 +120,11 @@ class CultureGraph:
             character = set(character)
 
             # 生成“提到”关系
+            ''' 由于生成很慢，注释掉
             hanlp.pretrained.mtl.ALL  # MTL多任务，具体任务见模型名称，语种见名称最后一个字段或相应语料库
             HanLP = hanlp.load(hanlp.pretrained.mtl.CLOSE_TOK_POS_NER_SRL_DEP_SDP_CON_ELECTRA_BASE_ZH)
             count = 0
             batch_size = 128
-            tmp = poetry[61055:]
             for poet in poetry:
                 count += 1
                 content = poet["内容"][:3000] if len(poet["内容"]) > 3000 else poet["内容"]
@@ -143,15 +143,15 @@ class CultureGraph:
                     print("已处理(%d / %d)首诗词" % (count, len(poetry)))
                     gc.collect()
                     torch.cuda.empty_cache()
-
+            '''
             os.makedirs(export_path)
             self.save_all_data(character, poetry, location, rels_refer_pos, rels_refer_char, rels_indite)
         else:
             character, poetry, location, rels_refer_pos, rels_refer_char, rels_indite = self.load_all_data()
 
 
-        # self.create_poetry_nodes(character, poetry, location)
-        # self.create_poetry_rels(rels_refer_pos, rels_refer_char, rels_indite)
+        self.create_poetry_nodes(character, poetry, location)
+        self.create_poetry_rels(rels_refer_pos, rels_refer_char, rels_indite)
 
     def save_all_data(self, character, poetry, location, rels_refer_pos, rels_refer_char, rels_indite):
         self.save_data(character, "character")
