@@ -122,16 +122,14 @@ class CultureGraph:
             # 生成“提到”关系
             hanlp.pretrained.mtl.ALL  # MTL多任务，具体任务见模型名称，语种见名称最后一个字段或相应语料库
             HanLP = hanlp.load(hanlp.pretrained.mtl.CLOSE_TOK_POS_NER_SRL_DEP_SDP_CON_ELECTRA_BASE_ZH)
-            tasks = list(HanLP.tasks.keys())
-            print(tasks)  # Pick what you need from what we have
-            for task in tasks:
-                if task not in ('tok/fine', 'tok/coarse', 'ner/msra'):
-                    del HanLP[task]
             count = 0
             batch_size = 128
+            tmp = poetry[61055:]
             for poet in poetry:
                 count += 1
-                result = HanLP(poet["内容"], tasks='ner')["ner/msra"]
+                content = poet["内容"][:3000] if len(poet["内容"]) > 3000 else poet["内容"]
+                result = HanLP(content, tasks='ner')["ner/msra"]
+
                 for i in result:
                     if i[1] == "LOCATION":
                         location.add(i[0])
