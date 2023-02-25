@@ -21,6 +21,14 @@
 
 ## step1 生成数据
 运行"build_graph.py"
+
+```3090跑完大概要40分钟```
+
+或
+
+直接下载已经生成好的数据
+链接：https://pan.baidu.com/s/1YHY4mDVePS1xtith6M0Diw 
+提取码：atri
 ## step2 导入数据
 
 ### 离线导入:
