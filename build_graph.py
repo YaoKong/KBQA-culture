@@ -7,7 +7,6 @@ import hanlp
 import pickle
 import torch
 import gc
-from GPUtil import showUtilization as gpu_usage
 
 class CultureGraph:
     def __init__(self):

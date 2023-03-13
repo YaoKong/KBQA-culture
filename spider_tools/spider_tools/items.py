@@ -6,12 +6,23 @@
 import scrapy
 
 
-class SpiderToolsItem(scrapy.Item):
+class CharacterItem(scrapy.Item):
     name = scrapy.Field()
-    description = scrapy.Field()
+    summary = scrapy.Field()
+    basic_name = scrapy.Field()
+    basic_value = scrapy.Field()
     masterpiece = scrapy.Field()
     alias = scrapy.Field()
     dynasty = scrapy.Field()
     region = scrapy.Field()
     identity = scrapy.Field()
+
+class CalligraphyItem(scrapy.Item):
+    style = scrapy.Field()
+    calligrapher = scrapy.Field()
+    content = scrapy.Field()
+    name = scrapy.Field()
+    url = scrapy.Field()
+    carrier = scrapy.Field()  #书法形式，如碑刻，字帖(拓本)
+    dynasty = scrapy.Field()
 
