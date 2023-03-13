@@ -26,3 +26,9 @@ class CalligraphyItem(scrapy.Item):
     carrier = scrapy.Field()  #书法形式，如碑刻，字帖(拓本)
     dynasty = scrapy.Field()
 
+class LocationItem(scrapy.Item):
+    name = scrapy.Field()
+    alias = scrapy.Field()
+    province = scrapy.Field()
+    city = scrapy.Field()
+    description = scrapy.Field()

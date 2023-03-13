@@ -19,10 +19,18 @@ class CalligraphySpider(scrapy.Spider):
     custom_settings = {
         'ITEM_PIPELINES': {"spider_tools.pipelines.CalligraphyPipeline": 350},
         'FEEDS': {
-            '%(name)s/%(name)s_%(time)s.csv': {
+            'baike/chara_%(time)s.csv': {
                 'format': 'csv',
                 'encoding': 'utf8',
                 'store_empty': False,
+                'item_classes': [CharacterItem],
+                'fields': ["name", "alias", "identity", "dynasty", "masterpiece", "region", "summary"],
+            },
+            'calligraphy/calligraphy_%(time)s.csv': {
+                'format': 'csv',
+                'encoding': 'utf8',
+                'store_empty': False,
+                'item_classes': [CalligraphyItem],
                 'fields': ["style", "calligrapher", "content", "name", "url", "carrier", "dynasty"],
             },
         },
@@ -30,20 +38,21 @@ class CalligraphySpider(scrapy.Spider):
     def parse(self, response):
         urls = response.xpath('//div[@class="fr"]/div/a/@href').getall()
         for url in urls:
-            yield scrapy.Request(response.urljoin(urls[0]), callback=self.parse_chara)
+            yield scrapy.Request(response.urljoin(url), callback=self.parse_chara)
 
 
     def parse_chara(self, response):
         chara_item = CharacterItem()
         chara_item["summary"] = ''.join(response.xpath("//div[@class='navmenu']/p/text()").getall())
-        print(chara_item["summary"][0])
+
         chara_item["name"] = re.match(".+(?=书法大全)", response.xpath("string(//h2)").get()).group()
         chara_item["masterpiece"] = list(set(re.findall("[《](.*?)[》]", chara_item["summary"])))
-        yield chara_item
-
-        urls = response.xpath("//div[@class='ztlist']/li/div/a/@href").getall()
-        for url in urls:
-            yield scrapy.Request(response.urljoin(url), callback=self.parse_calligraphy)
+        # spider_tools.items.CharacterItem
+        # yield chara_item
+        #
+        # urls = response.xpath("//div[@class='ztlist']/li/div/a/@href").getall()
+        # for url in urls:
+        #     yield scrapy.Request(response.urljoin(url), callback=self.parse_calligraphy)
     def parse_calligraphy(self, response):
         item = CalligraphyItem()
         col = response.xpath("//*[@id='left']/div[2]/p/text()").getall()
@@ -52,7 +61,12 @@ class CalligraphySpider(scrapy.Spider):
         info_dict = dict(zip(col, value))
         item["calligrapher"] = info_dict["作者"]
         item["style"] = info_dict["书体"]
-        item["name"] = re.search("《.*》", response.xpath("string(//h1)").get()).group()
+
+        name_xpath = response.xpath("string(//h1)").get()
+        if re.search("《.*》", name_xpath) is not None:
+            item["name"] = re.search("《.*》", name_xpath).group()
+        elif re.search("(?<=·).+", name_xpath) is not None:
+            item["name"] = re.search("(?<=·).+", name_xpath).group()
 
         item["content"] = ''.join(response.xpath("string(//div[@id='left']/div[4])").getall())
         if item["content"].find("碑") != -1 or item["content"].find("刻") != -1:
@@ -62,7 +76,8 @@ class CalligraphySpider(scrapy.Spider):
 
         # [\s|\S]*释文：
         # (?<=(释文：\s*)).+
-        item["content"] = re.sub(r"[\s|\S]*释文：", "", "".join(item["content"]))
+        item["content"] = re.sub(r"[\s|\S]*(释文：|【释文】)", "", "".join(item["content"]))
+        item["content"] = re.sub(r'(\d\s)+.+', '', item["content"])
         item["url"] = response.xpath("//div[@class='left']/div[4]/p//@src").getall()
         yield item
 

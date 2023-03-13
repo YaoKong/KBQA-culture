@@ -9,9 +9,14 @@ import scrapy
 from itemadapter import ItemAdapter
 import re
 
+from .items import CharacterItem
+
+
 class CharacterPipeline:
 
     def process_item(self, item, spider):
+        if isinstance(item, CharacterItem) is False:
+            return item
         if item["identity"] is None or item["identity"].find("词语") != -1:
             return item
 
@@ -57,6 +62,5 @@ class CharacterPipeline:
 
 class CalligraphyPipeline:
     def process_item(self, item, spider):
-        print("书法pipelines")
         print(item)
         return item

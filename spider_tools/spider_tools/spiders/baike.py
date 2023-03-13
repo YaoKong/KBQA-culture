@@ -15,7 +15,7 @@ class BaikeSpider(scrapy.Spider):
     # start_urls = [str]
 
     custom_settings = {
-        'ITEM_PIPELINES': {'pider_tools.pipelines.CharacterPipeline': 300},
+        'ITEM_PIPELINES': {'spider_tools.pipelines.CharacterPipeline': 300},
         'FEEDS': {
             '%(name)s/%(name)s_%(time)s.csv': {
                 'format': 'csv',
