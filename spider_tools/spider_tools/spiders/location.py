@@ -1,6 +1,6 @@
 import scrapy
 
-from spider_tools.spider_tools.items import LocationItem
+from ..items import LocationItem
 
 
 class LocationSpider(scrapy.Spider):
@@ -33,7 +33,9 @@ class LocationSpider(scrapy.Spider):
         urls = response.xpath('//*[@id="tctitle"]/a/@href').getall()
         for url in urls:
             yield scrapy.Request(response.urljoin(url), callback=self.parse_spot)
-    def parse_city(self,response):
+        url = response.xpath('//*[@id="list-page"]/ul/li/a').getall()
+
+        if url.xpath("string(*)").getall()[-1] == "下一页":
+            yield scrapy.Request(response.urljoin(url), callback=self.parse_city)
+    def parse_spot(self,response):
         urls = response.xpath('//*[@id="tctitle"]/a/@href').getall()
-        for url in urls:
-            yield scrapy.Request(response.urljoin(url), callback=self.parse_spot)

@@ -47,12 +47,11 @@ class CalligraphySpider(scrapy.Spider):
 
         chara_item["name"] = re.match(".+(?=书法大全)", response.xpath("string(//h2)").get()).group()
         chara_item["masterpiece"] = list(set(re.findall("[《](.*?)[》]", chara_item["summary"])))
-        # spider_tools.items.CharacterItem
-        # yield chara_item
-        #
-        # urls = response.xpath("//div[@class='ztlist']/li/div/a/@href").getall()
-        # for url in urls:
-        #     yield scrapy.Request(response.urljoin(url), callback=self.parse_calligraphy)
+        yield chara_item
+
+        urls = response.xpath("//div[@class='ztlist']/li/div/a/@href").getall()
+        for url in urls:
+            yield scrapy.Request(response.urljoin(url), callback=self.parse_calligraphy)
     def parse_calligraphy(self, response):
         item = CalligraphyItem()
         col = response.xpath("//*[@id='left']/div[2]/p/text()").getall()
