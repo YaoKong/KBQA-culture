@@ -64,3 +64,7 @@ class CalligraphyPipeline:
     def process_item(self, item, spider):
         print(item)
         return item
+class LocationPipeline:
+    def process_item(self, item, spider):
+        print(item)
+        return item

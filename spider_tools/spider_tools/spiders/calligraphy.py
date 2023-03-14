@@ -31,7 +31,7 @@ class CalligraphySpider(scrapy.Spider):
                 'encoding': 'utf8',
                 'store_empty': False,
                 'item_classes': [CalligraphyItem],
-                'fields': ["style", "calligrapher", "content", "name", "url", "carrier", "dynasty"],
+                'fields': ["name", "style", "calligrapher",  "url", "carrier", "dynasty", "content"],
             },
         },
     }

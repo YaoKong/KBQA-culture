@@ -66,6 +66,7 @@ DEFAULT_REQUEST_HEADERS = {
 ITEM_PIPELINES = {
     "spider_tools.pipelines.CharacterPipeline": 300,
     "spider_tools.pipelines.CalligraphyPipeline": 350,
+    'spider_tools.pipelines.LocationPipeline': 400
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

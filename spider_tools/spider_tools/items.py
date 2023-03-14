@@ -31,4 +31,5 @@ class LocationItem(scrapy.Item):
     alias = scrapy.Field()
     province = scrapy.Field()
     city = scrapy.Field()
+    urls = scrapy.Field() # 图片地址
     description = scrapy.Field()
