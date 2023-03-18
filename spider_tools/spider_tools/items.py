@@ -33,3 +33,7 @@ class LocationItem(scrapy.Item):
     city = scrapy.Field()
     urls = scrapy.Field() # 图片地址
     description = scrapy.Field()
+
+class LocDictItem(scrapy.Item):
+    name = scrapy.Field()
+    alias = scrapy.Field()

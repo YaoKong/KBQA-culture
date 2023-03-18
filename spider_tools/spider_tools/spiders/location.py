@@ -25,7 +25,8 @@ class LocationSpider(scrapy.Spider):
     def parse(self, response):
         urls = response.xpath('//div[@id="list110"]/a/@href').getall()
         for url in urls:
-            yield scrapy.Request(response.urljoin(url), callback=self.parse_more)
+            if url.find("viewa") != -1:
+                yield scrapy.Request(response.urljoin(url), callback=self.parse_more)
     def parse_more(self,response):
         url = response.xpath('//span[@class="listmore"]/a/@href').get()
         yield scrapy.Request(response.urljoin(url), callback=self.parse_city)
