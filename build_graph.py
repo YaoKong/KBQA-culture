@@ -25,7 +25,7 @@ class CultureGraph:
                 if poetry_df is None:
                     poetry_df = pd.read_csv(os.path.join(poetry_path, filename))
                 else:
-                    poetry_df = pd.concat([poetry_df,pd.read_csv(os.path.join(poetry_path, filename))],
+                    poetry_df = pd.concat([poetry_df, pd.read_csv(os.path.join(poetry_path, filename))],
                                                  ignore_index=True)
 
         self.generate_id_column(poetry_df, 'pid:ID', "pid")
