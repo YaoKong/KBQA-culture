@@ -1,7 +1,7 @@
 import torch
 import pandas as pd
 from tqdm import tqdm
-
+import numpy as np
 import data_loader
 def test(model, test_iter, config):
     model.eval()
@@ -10,7 +10,7 @@ def test(model, test_iter, config):
 
     idx = 0
     for inputs, labels in tqdm(test_data):
-        # idx += 1
+        idx += 1
         # if idx > 1000:
         #     break
         logist = model(**inputs)
@@ -31,6 +31,8 @@ def test(model, test_iter, config):
             pred_subs = extract_sub(pred_sub_heads[batch_index].squeeze(), pred_sub_tails[batch_index].squeeze())
             true_subs = extract_sub(sub_heads[batch_index].squeeze(), sub_tails[batch_index].squeeze())
 
+            tmp_obj_head = pred_obj_heads[batch_index]
+            tmp_obj_tail = pred_obj_tails[batch_index]
             pred_objs = extract_obj_and_rel(pred_obj_heads[batch_index], pred_obj_tails[batch_index])
             true_objs = extract_obj_and_rel(obj_heads[batch_index], obj_tails[batch_index])
 
@@ -92,7 +94,7 @@ def extract_obj_and_rel(obj_heads, obj_tails):
         if objs:
             for obj in objs:
                 start_index, end_index = obj
-                obj_and_rels.append((rel_index, start_index, end_index))
+                obj_and_rels.append((rel_index + 1, start_index, end_index))
     return obj_and_rels
 
 

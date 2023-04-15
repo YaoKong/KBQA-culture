@@ -19,14 +19,14 @@ class CalligraphySpider(scrapy.Spider):
     custom_settings = {
         'ITEM_PIPELINES': {"spider_tools.pipelines.CalligraphyPipeline": 350},
         'FEEDS': {
-            'baike/chara_%(time)s.csv': {
+            'calligraphy/calligrapher.csv': {
                 'format': 'csv',
                 'encoding': 'utf8',
                 'store_empty': False,
                 'item_classes': [CharacterItem],
                 'fields': ["name", "alias", "identity", "dynasty", "masterpiece", "region", "summary"],
             },
-            'calligraphy/calligraphy_%(time)s.csv': {
+            'calligraphy/calligraphy.csv': {
                 'format': 'csv',
                 'encoding': 'utf8',
                 'store_empty': False,

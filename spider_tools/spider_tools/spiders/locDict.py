@@ -3,7 +3,7 @@ import re
 import pandas as pd
 import scrapy
 
-from ..items import LocDictItem
+from ..items import LocationItem
 from urllib import parse
 import re
 class locDictSpider(scrapy.Spider):
@@ -12,9 +12,11 @@ class locDictSpider(scrapy.Spider):
 
     custom_settings = {
         'FEEDS': {
-            'locDict/locDict_%(time)s.json': {
-                'format': 'jsonlines',
+            'locDict/locDict.csv': {
+                'format': 'csv',
                 'encoding': 'utf8',
+                'store_empty': False,
+                'item_classes': [LocationItem],
                 'store_empty': False,
             },
         },
@@ -46,11 +48,18 @@ class locDictSpider(scrapy.Spider):
             url = response.xpath("//div[@class='para']/a[@target='_blank']/@href").xpath("string(.)").get()
             yield scrapy.Request(response.urljoin(url), callback=self.parse)
         else:
-            item = LocDictItem()
+            item = LocationItem()
             item["name"] = info["中文名"]
             if info.get("别名") is not None:
-                item["alias"] = info["别名"].split("、")
-
+                if info["别名"].find("、") != -1:
+                    item["alias"] = info["别名"].split("、")
+                elif info["别名"].find("，") != -1:
+                    item["alias"] = info["别名"].split("，")
+                else:
+                    item["alias"] = info["别名"]
+            item["province"] = info["所属地区"]
+            item["description"] = response.xpath("string(//div[@label-module='lemmaSummary'])").get()
+            item["description"] = re.sub("\[.+]|\n|\xa0", "", item["description"])  # 去除[]以及空白符
         yield item
 
 

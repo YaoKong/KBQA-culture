@@ -69,6 +69,7 @@ ITEM_PIPELINES = {
     'spider_tools.pipelines.LocationPipeline': 400
 }
 
+RETRY_ENABLED = False
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
 # AUTOTHROTTLE_ENABLED = True

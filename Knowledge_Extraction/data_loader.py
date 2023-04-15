@@ -62,7 +62,7 @@ class data_generator:
     def __len__(self):
         return self.steps
     def __iter__(self):
-        tokens_batch, mask_batch, sub_heads_batch, sub_tails_batch, head2tails, sub_lens, obj_heads_batch, obj_tails_batch = [], [], [], [], [], [], [], []
+        tokens_batch, mask_batch, sub_heads_batch, sub_tails_batch, head2tails, sub_lens, obj_heads_batch, obj_tails_batch, triple_batch = [], [], [], [], [], [], [], [], []
         for texts, spo_list in self.data:
             tokens = self.tokenizer(texts, padding=True).data
             for idx in range(len(texts)):
@@ -95,7 +95,7 @@ class data_generator:
 
                     sub_head, sub_tail = choice(list(s2ro_map.keys()))
                     head2tail = torch.zeros(token_len)
-                    head2tail[sub_head : sub_tail + 1] = 1
+                    head2tail[sub_head: sub_tail + 1] = 1
                     sub_len = torch.tensor([sub_tail - sub_head + 1], dtype=torch.float)
 
                     obj_heads, obj_tails = torch.zeros((token_len, self.num_relations)), torch.zeros((token_len, self.num_relations))
@@ -111,8 +111,7 @@ class data_generator:
                     sub_lens.append(sub_len)
                     obj_heads_batch.append(obj_heads)
                     obj_tails_batch.append(obj_tails)
-                else:
-                    print("test!")
+                    triple_batch.append(triples)
 
             tokens_batch = torch.tensor(tokens_batch).to(self.device)
             mask_batch = torch.tensor(mask_batch).to(self.device)
@@ -131,10 +130,10 @@ class data_generator:
                'sub_heads': sub_heads_batch,
                'sub_tails': sub_tails_batch,
                'obj_heads': obj_heads_batch,
-               'obj_tails': obj_tails_batch
+               'obj_tails': obj_tails_batch,
            }
 
-            tokens_batch, mask_batch, sub_heads_batch, sub_tails_batch, head2tails, sub_lens, obj_heads_batch, obj_tails_batch = [], [], [], [], [], [], [], []
+            tokens_batch, mask_batch, sub_heads_batch, sub_tails_batch, head2tails, sub_lens, obj_heads_batch, obj_tails_batch, triple_batch = [], [], [], [], [], [], [], [], []
 
 if __name__ == "__main__":
     config = Config()

@@ -26,8 +26,8 @@ def train(model, optimizer, config, train_iter, dev_iter):
     epochs = config.max_epoch
     train_data = dl.data_generator(train_iter, config)
     best_triple_f1 = 0
-    step = 0
     for epoch in range(epochs):
+        step = 0
         for inputs, labels in tqdm(train_data):
             model.train()
             logist = model(**inputs)
@@ -38,14 +38,15 @@ def train(model, optimizer, config, train_iter, dev_iter):
 
             # 每500步做一次验证
             step += 1
-            if step % 200 == 0:
+            if step % 1000 == 0:
                 sub_precision, sub_recall, sub_f1, triple_precision, triple_recall, triple_f1, df = test(model,
                                                                                                          dev_iter,
                                                                                                          config)
+
                 if triple_f1 > best_triple_f1:
                     best_triple_f1 = triple_f1
                     # 直接保存模型
-                    torch.save(model, 'best_f1.pth')
+                    torch.save(model.state_dict(), config.weights_save_name)
                     print(
                         'epoch:{},step:{}/{},sub_precision:{:.4f}, sub_recall:{:.4f}, sub_f1:{:.4f}, triple_precision:{:.4f}, triple_recall:{:.4f}, triple_f1:{:.4f},train loss:{:.4f}'.format(
                             epoch, step, train_data.steps, sub_precision, sub_recall, sub_f1, triple_precision, triple_recall, triple_f1,

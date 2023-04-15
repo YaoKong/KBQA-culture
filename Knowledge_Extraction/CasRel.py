@@ -12,6 +12,9 @@ class CasRel(nn.Module):
         self.obj_heads_linear = nn.Linear(self.config.bert_dim, self.config.num_relations)
         self.obj_tails_linear = nn.Linear(self.config.bert_dim, self.config.num_relations)
 
+        self.alpha = 0.25
+        self.gamma = 2
+
     def get_encoded_text(self, token_ids, mask):
         encoded_text = self.bert(token_ids, attention_mask=mask)[0]
         return encoded_text
@@ -29,7 +32,7 @@ class CasRel(nn.Module):
         sub = sub / sub_lens
         encoded_text = sub + encoded_text
         pred_obj_heads = torch.sigmoid(self.obj_heads_linear(encoded_text))
-        pred_obj_tails = torch.sigmoid(self.obj_heads_linear(encoded_text))
+        pred_obj_tails = torch.sigmoid(self.obj_tails_linear(encoded_text))
         return pred_obj_heads, pred_obj_tails
     def forward(self, token_ids, mask, head2tails, sub_lens):
         encoded_text = self.get_encoded_text(token_ids, mask)
@@ -55,7 +58,21 @@ class CasRel(nn.Module):
                 mask = mask.unsqueeze(-1)
             return torch.sum(loss * mask) / torch.sum(mask)
 
+            # count = torch.sum(mask)
+            # logist = pred.view(-1)
+            # label = label.view(-1)
+            # mask = mask.view(-1)
+            #
+            # alpha_factor = torch.where(torch.eq(label, 1), 1 - self.alpha, self.alpha)
+            # focal_weight = torch.where(torch.eq(label, 1), 1 - logist, logist)
+            #
+            # loss = -(torch.log(logist) * label + torch.log(1 - logist) * (1 - label)) * mask
+            # return torch.sum(focal_weight * loss) / count
+
+        rel_count = obj_heads.shape[-1]
+        rel_mask = mask.unsqueeze(-1).repeat(1, 1, rel_count)
+
         return calc_loss(pred_sub_heads, sub_heads, mask) + \
             calc_loss(pred_sub_tails, sub_tails, mask) + \
-            calc_loss(pred_obj_heads, obj_heads, mask) + \
-            calc_loss(pred_obj_tails, obj_tails, mask)
+            calc_loss(pred_obj_heads, obj_heads, rel_mask) + \
+            calc_loss(pred_obj_tails, obj_tails, rel_mask)

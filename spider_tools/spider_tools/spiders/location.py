@@ -25,11 +25,12 @@ class LocationSpider(scrapy.Spider):
     def parse(self, response):
         urls = response.xpath('//div[@id="list110"]/a/@href').getall()
         for url in urls:
-            if url.find("viewa") != -1:
-                yield scrapy.Request(response.urljoin(url), callback=self.parse_more)
+            yield scrapy.Request(response.urljoin(url), callback=self.parse_more)
     def parse_more(self,response):
-        url = response.xpath('//span[@class="listmore"]/a/@href').get()
-        yield scrapy.Request(response.urljoin(url), callback=self.parse_city)
+        title = response.xpath("//div[@id='pagebody'][2]/div[@id='page_left']/div[2]/h1").get()
+        if title.find("区") != -1 or title.find("市") != -1 or title.find("省") != -1:
+            url = response.xpath('//span[@class="listmore"]/a/@href').get()
+            yield scrapy.Request(response.urljoin(url), callback=self.parse_city)
     def parse_city(self,response):
         urls = response.xpath('//*[@id="tctitle"]/a/@href').getall()
         for url in urls:
