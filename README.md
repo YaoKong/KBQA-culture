@@ -27,7 +27,7 @@ TO DO:
 或
 
 直接下载已经生成好的数据,下载好后可直接跳到第四步
-链接：链接: https://pan.baidu.com/s/1mvyxhAPaiEp_qAd7v4jwIw 提取码: i75s 
+链接： https://pan.baidu.com/s/1mvyxhAPaiEp_qAd7v4jwIw 提取码: i75s 
 
 ### 2.爬虫爬取
 
