@@ -155,7 +155,7 @@ def extract_knowledge(config, device, model):
 
     for index, row in calligraphy.iterrows():
         call_indite_rels.append([row['calligrapher'], '创作出：书法', row['name']])
-    call_indite_rels = pd.DataFrame(work_indite_rels, columns=["书法家", ":TYPE", "书法"])
+    call_indite_rels = pd.DataFrame(call_indite_rels, columns=["书法家", ":TYPE", "书法"])
     tmp = pd.merge(calligraphy, calligrapher, left_on='calligrapher', right_on='name')
     calligraphy = tmp.loc[:, ['name_x', 'style', 'calligrapher', 'url', 'carrier', 'dynasty_y', 'content']]
     calligraphy.columns = ['name', 'style', 'calligrapher', 'url', 'carrier', 'dynasty', 'content']
@@ -184,17 +184,18 @@ def extract_knowledge(config, device, model):
     visit_location_rel = pd.DataFrame(visit_location_rel, columns=["人物", ":TYPE", "地点"]).drop_duplicates()
     visit_area_rel = pd.DataFrame(visit_area_rel, columns=["人物", ":TYPE", "景区"]).drop_duplicates()
 
-    baike.to_csv(os.path.join(config.result_dir, 'character.csv'), index=False) # 人物
-    work_indite_rels.to_csv(os.path.join(config.result_dir, 'work_indite_rels.csv'), index=False)   # 人物创作
-    born_rels.to_csv(os.path.join(config.result_dir, 'born_rels.csv'), index=False)  # 出生于
-    calligraphy.to_csv(os.path.join(config.result_dir, 'calligraphy.csv'), index=False) # 书法
-    calligrapher.to_csv(os.path.join(config.result_dir, 'calligrapher.csv'), index=False)   # 书法家
+    # baike.to_csv(os.path.join(config.result_dir, 'character.csv'), index=False) # 人物
+    # work_indite_rels.to_csv(os.path.join(config.result_dir, 'work_indite_rels.csv'), index=False)   # 人物创作
+    # born_rels.to_csv(os.path.join(config.result_dir, 'born_rels.csv'), index=False)  # 出生于
+    # calligraphy.to_csv(os.path.join(config.result_dir, 'calligraphy.csv'), index=False) # 书法
+    # calligrapher.to_csv(os.path.join(config.result_dir, 'calligrapher.csv'), index=False)   # 书法家
     call_indite_rels.to_csv(os.path.join(config.result_dir, 'call_indite_rels.csv'), index=False) # 书法创作
-    location.to_csv(os.path.join(config.result_dir, 'area.csv'), index=False)   # 景区
-    locate_rels.to_csv(os.path.join(config.result_dir, 'locate_rels.csv'), index=False) # 位于
-    locDict.to_csv(os.path.join(config.result_dir, 'location.csv'), index=False)    # 地点
-    visit_location_rel.to_csv(os.path.join(config.result_dir, 'visit_location_rel.csv'), index=False)  # 人物到过地点
-    visit_area_rel.to_csv(os.path.join(config.result_dir, 'visit_area_rel.csv'), index=False)  # 人物到过景区
+    # location.to_csv(os.path.join(config.result_dir, 'area.csv'), index=False)   # 景区
+    # locate_rels.to_csv(os.path.join(config.result_dir, 'locate_rels.csv'), index=False) # 位于
+    # locDict.to_csv(os.path.join(config.result_dir, 'location.csv'), index=False)    # 地点
+    # visit_location_rel.to_csv(os.path.join(config.result_dir, 'visit_location_rel.csv'), index=False)  # 人物到过地点
+    # visit_area_rel.to_csv(os.path.join(config.result_dir, 'visit_area_rel.csv'), index=False)  # 人物到过景区
+    pass
 
 if __name__ == "__main__":
     config = Config(ner_flag=True)
